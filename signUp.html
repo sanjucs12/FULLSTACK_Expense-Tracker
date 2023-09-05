@@ -6,15 +6,18 @@
     <title>Sign Up Page</title>
   </head>
   <body>
-    <form onsubmit="signUpHandler(event)">
-      <label for="name">Name</label>
-      <input type="text" id="name" />
-      <label for="email">E-mail</label>
-      <input type="email" id="email" />
-      <label for="password">Password</label>
-      <input type="password" id="password" />
-      <button type="submit">Sign Up</button>
-    </form>
+    <section class="form-container">
+      <form onsubmit="signUpHandler(event)">
+        <label for="name">Name</label>
+        <input type="text" id="name" />
+        <label for="email">E-mail</label>
+        <input type="email" id="email" />
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <button type="submit">Sign Up</button>
+      </form>
+    </section>
+    <div class="error-container"></div>
     <script src="signUp.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </body>
