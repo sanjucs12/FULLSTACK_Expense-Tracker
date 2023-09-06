@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <section class="form-container">
+      <form onsubmit="loginHandler(event)">
+        <label for="email">Email</label>
+        <input type="email" id="email" />
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <button type="submit">Login</button>
+      </form>
+    </section>
+    <div class="error-container"></div>
+    <script src="login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </body>
+</html>
