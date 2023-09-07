@@ -1,4 +1,4 @@
-const User = require("../utils/user");
+const User = require("../models/user");
 const bcrypt = require("bcrypt"); //USED FOR PASSWORD ENCRYPTION : USES BLOW FISH ALGORITHM
 
 exports.signUp = async (req, res, next) => {
