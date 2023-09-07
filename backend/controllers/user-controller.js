@@ -1,4 +1,5 @@
 const User = require("../database/user");
+const bcrypt = require("bcrypt"); //USED FOR PASSWORD ENCRYPTION : USES BLOW FISH ALGORITHM
 
 exports.signUp = async (req, res, next) => {
   //   console.log(req.body);
@@ -6,20 +7,28 @@ exports.signUp = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  const isValidString = (string) => {
+    const removeSpaces = string.trim();
+    return removeSpaces.length > 0;
+  };
+
   try {
-    if (!name || !email || !password) {
+    if (
+      !isValidString(name) ||
+      !isValidString(email) ||
+      !isValidString(password)
+    ) {
       console.log(`ERROR IN LINE 11 : controllers/user-controller.js`);
       return res
         .status(400)
-        .send({ message: "PLEASE ENTER THE DETAILS...!!!" });
+        .send({ message: "PLEASE ENTER VALID DETAILS...!!!" });
     }
-
-    const userDetails = {
+    const hash = await bcrypt.hash(password, 10); //10 REFERS TO SALT ROUNDS
+    const newUser = await User.create({
       name: name,
       email: email,
-      password: password,
-    };
-    const newUser = await User.create(userDetails);
+      password: hash,
+    });
     res.status(201).send({ message: `new user added : ${newUser.name}` });
     // console.log(newUser);
   } catch (err) {
@@ -48,8 +57,15 @@ exports.login = async (req, res, next) => {
     if (!emailExists) {
       return res.status(404).send({ message: `EMAIL ID DOESN'T EXIST` });
     } else {
-      const checkPassword = emailExists.dataValues.password;
-      if (checkPassword === req.body.password) {
+      //IF EMAIL EXISTS : COMPARE THE PASSWORDS THAT IS STORED AS HASH
+      const hashPassword = emailExists.dataValues.password;
+
+      const checkPassword = await bcrypt.compare(
+        req.body.password,
+        hashPassword
+      );
+      // console.log(checkPassword);
+      if (checkPassword) {
         res.status(200).send({ message: "LOGGED IN SUCCESSFULLY" });
       } else {
         res.status(401).send({ message: "INCORRECT PASSWORD" });

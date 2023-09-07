@@ -5,9 +5,19 @@ async function signUpHandler(e) {
   const name = e.target.name.value;
   const email = e.target.email.value;
   const password = e.target.password.value;
-  if (!name || !email || !password) {
+
+  const isValidString = (string) => {
+    const removeSpaces = string.trim();
+    return removeSpaces.length > 0;
+  };
+
+  if (
+    !isValidString(name) ||
+    !isValidString(email) ||
+    !isValidString(password)
+  ) {
     // alert("PLEASE ENTER DETAILS");
-    errorContainer.innerHTML = `<span style="color:red">PLEASE ENTER DETAILS..!!!</span>`;
+    errorContainer.innerHTML = `<span style="color:red">PLEASE ENTER VALID DETAILS...!!!</span>`;
   } else {
     try {
       const signUpDetails = {
