@@ -1,17 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const User = require("./backend/database/user");
-const userController = require("./backend/controllers/user-controller");
+const sequelize = require("./backend/database/database");
+const userRoutes = require("./backend/routes/user-route");
 
 const app = express();
 app.use(cors()); //ALLOW REQUESTS FROM ALL ORIGINS
 app.use(bodyParser.json()); //PARSES THE INCOMMING REQUESTS AND STORES IT INSIDE THE BODY OBJECT
 
-app.post("/user/sign-up", userController.signUp);
-app.post("/user/login", userController.login);
+app.use("/user", userRoutes);
 
-User.sync() //{force:true}
+sequelize
+  .sync() //{force:true}
   .then((res) => {
     app.listen(3000);
   })

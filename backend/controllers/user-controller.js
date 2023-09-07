@@ -1,4 +1,4 @@
-const User = require("../database/user");
+const User = require("../utils/user");
 const bcrypt = require("bcrypt"); //USED FOR PASSWORD ENCRYPTION : USES BLOW FISH ALGORITHM
 
 exports.signUp = async (req, res, next) => {
@@ -21,7 +21,7 @@ exports.signUp = async (req, res, next) => {
       console.log(`ERROR IN LINE 11 : controllers/user-controller.js`);
       return res
         .status(400)
-        .send({ message: "PLEASE ENTER VALID DETAILS...!!!" });
+        .json({ message: "PLEASE ENTER VALID DETAILS...!!!" });
     }
     const hash = await bcrypt.hash(password, 10); //10 REFERS TO SALT ROUNDS
     const newUser = await User.create({
@@ -29,12 +29,12 @@ exports.signUp = async (req, res, next) => {
       email: email,
       password: hash,
     });
-    res.status(201).send({ message: `new user added : ${newUser.name}` });
+    res.status(201).json({ message: `new user added : ${newUser.name}` });
     // console.log(newUser);
   } catch (err) {
     res
       .status(409)
-      .send({ message: `EMAIL ALREADY EXISTS...!! PLEASE SIGN-IN` });
+      .json({ message: `EMAIL ALREADY EXISTS...!! PLEASE SIGN-IN` });
     console.log(`ERROR IN LINE 25 : controllers/user-controller.js : ${err}`);
   }
 };
@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
     if (!req.body.email || !req.body.password) {
       return res
         .status(404)
-        .send({ message: "PLEASE ENTER THE LOGIN ID AND PASSWORD...!!!" });
+        .json({ message: "PLEASE ENTER THE LOGIN ID AND PASSWORD...!!!" });
     }
     //CHECK IF EMAIL EXISTS IN DATABASE
     const emailExists = await User.findOne({
@@ -55,7 +55,7 @@ exports.login = async (req, res, next) => {
     // console.log(emailExists);
 
     if (!emailExists) {
-      return res.status(404).send({ message: `EMAIL ID DOESN'T EXIST` });
+      return res.status(404).json({ message: `EMAIL ID DOESN'T EXIST` });
     } else {
       //IF EMAIL EXISTS : COMPARE THE PASSWORDS THAT IS STORED AS HASH
       const hashPassword = emailExists.dataValues.password;
@@ -66,13 +66,13 @@ exports.login = async (req, res, next) => {
       );
       // console.log(checkPassword);
       if (checkPassword) {
-        res.status(200).send({ message: "LOGGED IN SUCCESSFULLY" });
+        res.status(200).json({ message: "LOGGED IN SUCCESSFULLY" });
       } else {
-        res.status(401).send({ message: "INCORRECT PASSWORD" });
+        res.status(401).json({ message: "INCORRECT PASSWORD" });
       }
     }
   } catch (err) {
-    res.status(500).send({ message: "SOMETHING WENT WRONG" });
+    res.status(500).json({ message: "SOMETHING WENT WRONG" });
     console.log(`ERROR IN LINE 53 : controllers/user-controller.js : ${err}`);
   }
 };
