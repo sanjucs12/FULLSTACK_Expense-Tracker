@@ -9,42 +9,54 @@ exports.addExpense = async (req, res, next) => {
     if (!isValidAmount(amount) || !category) {
       return res.status(400).json({ message: `PLEASE ENTER VALID DETAILS` });
     }
+    // console.log(req.user.id);
+    const userId = req.user.id; //CURRENT LOGGED IN USERID : (PASSED THROUGS HEADERS AS AUTHORIZATION i.e., TOKEN)
     const newExpense = await Expense.create({
       amount: amount,
       description: description,
       category: category,
+      userId: userId,
     });
-    res.status(201).json(newExpense);
+    res.status(201).json({ success: true, expense: newExpense });
     console.log(`NEW EXPENSE ADDED : ${newExpense}`);
   } catch (err) {
-    res.status(500).json({ message: `SOMETHING WENT WRONG : ${err}` });
+    res
+      .status(500)
+      .json({ success: false, message: `SOMETHING WENT WRONG`, error: err });
     console.log(
-      `ERROR IN LINE 16 : CONTROLLERS/EXPENSE-CONTROLLER.JS : ${err}`
+      `ERROR IN LINE 25 : CONTROLLERS/EXPENSE-CONTROLLER.JS : ${err}`
     );
   }
 };
 
 exports.getExpenses = async (req, res, next) => {
   try {
-    const expenses = await Expense.findAll();
+    const userId = req.user.id; //CURRENT LOGGED IN USERID : (PASSED THROUGS HEADERS AS AUTHORIZATION i.e., TOKEN)
+    const expenses = await Expense.findAll({ where: { userId: userId } });
     res.status(200).json(expenses);
     console.log(`EXPENSES RETREIVED FROM DATABASE : ${expenses}`);
   } catch (err) {
-    console.log(`ERROR IN LINE 33 : CONTROLLERS/EXPENSE-CONTROLLER : ${err}`);
-    res.status(500).json(err);
+    console.log(`ERROR IN LINE 37 : CONTROLLERS/EXPENSE-CONTROLLER : ${err}`);
+    res
+      .status(500)
+      .json({ success: false, error: err, message: "SOMETHING WENT WRONG" });
   }
 };
 
 exports.deleteExpense = async (req, res, next) => {
   try {
-    const expenseId = req.params.id;
+    console.log(req.user.id);
+    const userId = req.user.id; //CURRENT LOGGED IN USERID : (PASSED THROUGS HEADERS AS AUTHORIZATION i.e., TOKEN)
+    const expenseId = req.params.id; //PARAMS GIVES THE DATA THAT WE PASS AS DYNAMIC ROUTE
     // console.log(expenseId);
-    await Expense.destroy({ where: { id: expenseId } });
-    res.status(200).json({ message: `ITEM REMOVED` });
+    await Expense.destroy({ where: { id: expenseId, userId: userId } });
+    res.status(200).json({ success: true, message: `ITEM REMOVED` });
   } catch (err) {
     console.log(
       `ERROR IN LINE 45 : CONTROLLERS/EXPENSE-CONTROLLER.JS : ${err}`
     );
-    res.status(500).json(err);
+    res
+      .status(500)
+      .json({ success: false, error: err, message: "SOMETHING WENT WRONG" });
   }
 };

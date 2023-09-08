@@ -18,12 +18,10 @@ const loginHandler = async (e) => {
         `http://localhost:3000/user/login`,
         loginDetails
       );
-      //   console.log(response);
-      if (response.status === 200) {
-        alert("LOGGED IN SUCCESSFULLY");
-      } else {
-        alert("SOMETHING WENT WRONG");
-      }
+      // console.log(response);
+      alert(response.data.message);
+      localStorage.setItem("token", response.data.token);
+      window.location.href = "../expense/expense.html";
     } catch (err) {
       //   console.log(err);
       errorContainer.innerHTML = `<span style="color:red">${err.response.data.message}</span>`;

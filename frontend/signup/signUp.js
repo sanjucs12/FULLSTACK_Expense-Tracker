@@ -31,8 +31,9 @@ async function signUpHandler(e) {
         "http://localhost:3000/user/sign-up",
         signUpDetails
       );
-      console.log(response.data.message);
-      // window.location.href = "../login/login.html";
+      // console.log(response.data.message);
+      alert("SIGN UP SUCCESSFULL : PLEASE LOGIN");
+      window.location.href = "../login/login.html";
     } catch (err) {
       //   console.log(err);
       errorContainer.innerHTML = `<span style="color:red">${err.response.data.message}</span>`;

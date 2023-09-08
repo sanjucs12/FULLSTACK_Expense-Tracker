@@ -16,13 +16,14 @@ async function expenseFormSubmitHandler(e) {
         description: description,
         category: category,
       };
-
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:3000/expense/add-expense",
-        expenseDetails
+        expenseDetails,
+        { headers: { Authorization: token } }
       );
-      // console.log(response);
-      displayExpense(response.data);
+      // console.log(response.data);
+      displayExpense(response.data.expense);
     } catch (err) {
       console.log(err);
       alert("SOMETHING WENT WRONG");
@@ -52,8 +53,10 @@ async function deleteExpenseHandler(e, obj) {
   const expenseRow = e.target.closest(".table-row");
   // console.log(expenseRow);
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.delete(
-      `http://localhost:3000/expense/remove-expense/${obj.id}`
+      `http://localhost:3000/expense/remove-expense/${obj.id}`,
+      { headers: { Authorization: token } }
     );
     // console.log(response);
     await expenseRow.remove();
@@ -65,8 +68,10 @@ async function deleteExpenseHandler(e, obj) {
 window.addEventListener("DOMContentLoaded", getExpenseDataHandler);
 async function getExpenseDataHandler() {
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.get(
-      "http://localhost:3000/expense/get-expenses"
+      "http://localhost:3000/expense/get-expenses",
+      { headers: { Authorization: token } }
     );
     // console.log(response.data);
     response.data.map((expense) => {
